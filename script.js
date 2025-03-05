@@ -18,12 +18,25 @@ let drawState = {
     toggleRainbow: false,
     toggleShading: false,
     toggleEraser: false,
-}
+};
+
+let gridLines = false;
 
 const gridContainer = document.querySelector(".grid");
 
-document.querySelector("#grid-lines").addEventListener("click", 
-    () => toggleGridLines(grid));
+const gridSizeSlider = document.querySelector("#grid-slider");
+gridSizeSlider.addEventListener("input", (e) => {
+    grid = generateGrid(e.target.value);
+    drawGrid(grid);
+    if (gridLines) {
+        grid.forEach(gridItem => gridItem.classList.add("grid-border"));
+    }
+});
+
+document.querySelector("#grid-lines").addEventListener("click", (e) => {
+    e.target.classList.toggle("button-toggle");
+    toggleGridLines(grid);
+});
 
 const clearButton = document.querySelector("#clear");
 clearButton.addEventListener("click", clearGrid);
@@ -37,7 +50,6 @@ shadingButton.addEventListener("click", toggleDrawMode);
 const eraserButton = document.querySelector("#eraser");
 eraserButton.addEventListener("click", toggleDrawMode);
 
-
 function toggleDrawMode(e) {
     const id = e.target.id;
     drawState.toggleRainbow = false;
@@ -46,7 +58,6 @@ function toggleDrawMode(e) {
     rainbowButton.classList.remove("button-toggle");
     shadingButton.classList.remove("button-toggle");
     eraserButton.classList.remove("button-toggle");
-
 
     if (id == "rainbow") {
         drawState.toggleRainbow = true;
@@ -60,21 +71,22 @@ function toggleDrawMode(e) {
 
 function clearGrid() {
     const gridItems = Array.from(gridContainer.children);
-    gridItems.forEach(gridItem => {
+    gridItems.forEach((gridItem) => {
         gridItem.style.backgroundColor = gridContainer.style.backgroundColor;
-    })
-} 
+    });
+}
 
 function drawGridItem(e) {
     e.target.style.backgroundColor = "black";
 }
 
-
 function generateGrid(gridSize) {
-    const containerSize = parseInt(window.getComputedStyle(gridContainer).width);
+    const containerSize = parseInt(
+        window.getComputedStyle(gridContainer).width
+    );
     const gridItemSize = containerSize / gridSize;
-    console.log(gridItemSize)
-    
+    console.log(gridItemSize);
+
     let grid = [];
     for (let i = 0; i < gridSize * gridSize; i++) {
         const gridItem = document.createElement("div");
@@ -87,8 +99,8 @@ function generateGrid(gridSize) {
     return grid;
 }
 
-
 function toggleGridLines(grid) {
+    gridLines = !gridLines;
     for (gridItem of grid) {
         if (gridItem.classList.contains("grid-border")) {
             gridItem.classList.remove("grid-border");
@@ -99,6 +111,7 @@ function toggleGridLines(grid) {
 }
 
 function drawGrid(grid) {
+    gridContainer.innerHTML = "";
     gridContainer.append(...grid);
 }
 
