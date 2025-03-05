@@ -81,6 +81,8 @@ label {
     width: 60vh;
     height: 60vh;
     background-color: #E2E8C0;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 button {
@@ -113,4 +115,11 @@ button:hover {
     background-color: #E2E8C0;
     color: #E83151;
 }
+
+.grid-border {
+    border: solid black 1px;
+}
+
+
+
 
