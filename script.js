@@ -21,9 +21,42 @@ let drawState = {
 }
 
 const gridContainer = document.querySelector(".grid");
+
+document.querySelector("#grid-lines").addEventListener("click", 
+    () => toggleGridLines(grid));
+
 const clearButton = document.querySelector("#clear");
 clearButton.addEventListener("click", clearGrid);
 
+const rainbowButton = document.querySelector("#rainbow");
+rainbowButton.addEventListener("click", toggleDrawMode);
+
+const shadingButton = document.querySelector("#shading");
+shadingButton.addEventListener("click", toggleDrawMode);
+
+const eraserButton = document.querySelector("#eraser");
+eraserButton.addEventListener("click", toggleDrawMode);
+
+
+function toggleDrawMode(e) {
+    const id = e.target.id;
+    drawState.toggleRainbow = false;
+    drawState.toggleShading = false;
+    drawState.toggleEraser = false;
+    rainbowButton.classList.remove("button-toggle");
+    shadingButton.classList.remove("button-toggle");
+    eraserButton.classList.remove("button-toggle");
+
+
+    if (id == "rainbow") {
+        drawState.toggleRainbow = true;
+    } else if (id == "shading") {
+        drawState.toggleShading = true;
+    } else {
+        drawState.toggleEraser = true;
+    }
+    document.querySelector("#" + id).classList.add("button-toggle");
+}
 
 function clearGrid() {
     const gridItems = Array.from(gridContainer.children);
@@ -69,6 +102,6 @@ function drawGrid(grid) {
     gridContainer.append(...grid);
 }
 
-const grid = generateGrid(16);
+let grid = generateGrid(16);
 toggleGridLines(grid);
 drawGrid(grid);
