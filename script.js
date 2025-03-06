@@ -27,9 +27,12 @@ const gridContainer = document.querySelector(".grid");
 const gridSizeSlider = document.querySelector("#grid-slider");
 gridSizeSlider.addEventListener("input", (e) => {
     grid = generateGrid(e.target.value);
+    document.querySelector(
+        "label"
+    ).textContent = `Grid: ${e.target.value}x${e.target.value}`;
     drawGrid(grid);
     if (gridLines) {
-        grid.forEach(gridItem => gridItem.classList.add("grid-border"));
+        grid.forEach((gridItem) => gridItem.classList.add("grid-border"));
     }
 });
 
@@ -50,23 +53,42 @@ shadingButton.addEventListener("click", toggleDrawMode);
 const eraserButton = document.querySelector("#eraser");
 eraserButton.addEventListener("click", toggleDrawMode);
 
+function getColor() {
+    if (drawState.toggleRainbow) {
+        //generates random Hex Color
+        return "#" + Math.floor(Math.random() * 16777215).toString(16);
+    } else if (drawState.toggleEraser) {
+        return gridContainer.style.backgroundColor;
+    } else {
+        return "rgba(0, 0, 0, 1)";
+    }
+}
+
 function toggleDrawMode(e) {
     const id = e.target.id;
-    drawState.toggleRainbow = false;
-    drawState.toggleShading = false;
-    drawState.toggleEraser = false;
-    rainbowButton.classList.remove("button-toggle");
-    shadingButton.classList.remove("button-toggle");
-    eraserButton.classList.remove("button-toggle");
 
     if (id == "rainbow") {
-        drawState.toggleRainbow = true;
+        drawState.toggleRainbow = !drawState.toggleRainbow;
+        drawState.toggleEraser = false;
+        drawState.toggleShading = false;
+        rainbowButton.classList.toggle("button-toggle");
+        shadingButton.classList.remove("button-toggle");
+        eraserButton.classList.remove("button-toggle");
     } else if (id == "shading") {
-        drawState.toggleShading = true;
+        drawState.toggleShading = !drawState.toggleShading;
+        drawState.toggleRainbow = false;
+        drawState.toggleEraser = false;
+        shadingButton.classList.toggle("button-toggle");
+        rainbowButton.classList.remove("button-toggle");
+        eraserButton.classList.remove("button-toggle");
     } else {
-        drawState.toggleEraser = true;
+        drawState.toggleEraser = !drawState.toggleEraser;
+        drawState.toggleShading = false;
+        drawState.toggleRainbow = false;
+        eraserButton.classList.toggle("button-toggle");
+        rainbowButton.classList.remove("button-toggle");
+        shadingButton.classList.remove("button-toggle");
     }
-    document.querySelector("#" + id).classList.add("button-toggle");
 }
 
 function clearGrid() {
@@ -76,8 +98,25 @@ function clearGrid() {
     });
 }
 
+function getShadedBlack(rgbaColor) {
+    if (rgbaColor.split(",").length == 3) {
+        return;
+    } 
+    const alpha = parseFloat(rgbaColor.slice(5, -1).split(",")[3]);
+    return `rgba(0, 0, 0, ${alpha + 0.1})`;
+}
+
 function drawGridItem(e) {
-    e.target.style.backgroundColor = "black";
+    if (drawState.toggleShading) {
+        if (e.target.style.backgroundColor == gridContainer.style.backgroundColor) {
+            color = getShadedBlack("rgba(0, 0, 0, 0.1)");
+        } else {
+            color = getShadedBlack(e.target.style.backgroundColor);
+        }
+    } else {
+        color = getColor();
+    }
+    e.target.style.backgroundColor = color;
 }
 
 function generateGrid(gridSize) {
@@ -85,7 +124,6 @@ function generateGrid(gridSize) {
         window.getComputedStyle(gridContainer).width
     );
     const gridItemSize = containerSize / gridSize;
-    console.log(gridItemSize);
 
     let grid = [];
     for (let i = 0; i < gridSize * gridSize; i++) {
