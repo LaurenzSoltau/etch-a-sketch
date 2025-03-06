@@ -123,7 +123,7 @@ function generateGrid(gridSize) {
     const containerSize = parseInt(
         window.getComputedStyle(gridContainer).width
     );
-    const gridItemSize = containerSize / gridSize;
+    const gridItemSize = (containerSize - 8) / gridSize;
 
     let grid = [];
     for (let i = 0; i < gridSize * gridSize; i++) {

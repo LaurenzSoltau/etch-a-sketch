@@ -14,6 +14,7 @@ h1 {
     font-size: 46px;
     color: #E83151;
     text-align: center;
+    text-shadow: 4px 4px 4px black;
 }
 
 h2 {
@@ -35,6 +36,12 @@ h2 {
     padding: 16px 16px;
     height: 60vh;
     background-color: #E2E8C0;
+}
+
+.settings, .grid {
+    border: solid #E83151 4px;
+    border-radius: 8px;
+    box-shadow: black 4px 4px 10px;
 }
 
 .grid-settings {
